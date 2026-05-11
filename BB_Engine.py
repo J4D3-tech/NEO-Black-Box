@@ -78,13 +78,17 @@ def prepare_data():
     }
 
 def train_model(data, epochs=5000, patience=30):
+    # Model typu Black-Box uczy się szybciej (mniej obliczeń w loss function),
+    # ale jest bardziej podatny na overfitting (dopasowanie do szumu w danych).
     device = data['device']
     X_train_t, y_train_t = data['train']
     X_val_t, y_val_t = data['val']
     scaler_y = data['scaler_y']
 
     model = NeoBlackBox(input_size=len(data['features_cols'])).to(device)
-    optimizer = optim.Adam(model.parameters(), lr=0.005)
+    optimizer = optim.Adam(model.parameters(), lr=0.005) 
+    # scheduler: Zmniejsza tempo uczenia, gdy model przestaje robić postępy.
+    # W BB jest to kluczowe, aby precyzyjnie "wstrzelić się" w minimum lokalne.
     scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10)
     
     os.makedirs(MODELS_DIR, exist_ok=True)

@@ -4,6 +4,8 @@ import plotly.graph_objects as go
 import plotly.offline as pyo
 
 def solve_kepler(M_rad, e, tol=1e-6):
+    # Iteracyjne rozwiązanie równania Keplera. 
+    # Niezbędne do zamiany czasu (Anomalii Średniej) na pozycję (Anomalię Ekscentryczną).
     E = M_rad
     for _ in range(100):
         diff = E - e * np.sin(E) - M_rad
@@ -13,6 +15,8 @@ def solve_kepler(M_rad, e, tol=1e-6):
     return E
 
 def get_position_at_time(a, e, i_deg, om_deg, w_deg, ma_deg, n_deg, epoch, t):
+    # Wyznaczanie pozycji 3D w układzie heliocentrycznym ekliptycznym.
+    # t - epoch: czas jaki upłynął od momentu pomiaru parametrów orbity.
     if e >= 1.0 or n_deg == 0:
         return np.array([np.nan, np.nan, np.nan])
         
@@ -77,7 +81,7 @@ def visualize_animated_neos(neo_list, epoch_start=2459000.5, days_to_simulate=36
     times = np.linspace(epoch_start, epoch_start + days_to_simulate, frames_count)
     colors_cycle = ['#FF8C00', '#9370DB', '#32CD32', '#FF1493', '#4169E1', '#8A2BE2', '#FF69B4', '#008080', '#20B2AA', '#4B0082']
     
-    # --- ETAP 1: WARSTWY STATYCZNE ---
+    # warstwy statyczne
     fig.add_trace(go.Scatter3d(x=[0], y=[0], z=[0], mode='markers', 
                                marker=dict(size=14, color='#FFD700', symbol='diamond', line=dict(color='orange', width=2)), 
                                name='Sun', showlegend=True))
